@@ -1,12 +1,5 @@
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-// ^ To streamline the inclusion of windows.h
-#include <Windows.h>
-
-#ifndef UNICODE
-#define UNICODE
-#endif
+#include "CoreMinimal.h"
+#include "Timer.h"
 
 // Forward declaration of windows procedure to handle OS messages
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -45,6 +38,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
 	ShowWindow(hwnd, nCmdShow);
 	
+	Timer timer;
+	timer.Reset();
+
 	// Non blocking window (need ts for it to be a game engine)
 	MSG msg = {};
 	bool isRunning = true;
@@ -61,6 +57,18 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
+
+		// Check if we exited early from the message loop
+		if (!isRunning) 
+		{
+			break;
+		}
+
+		// Tick timer at start of frame
+		timer.Tick();
+
+		float deltaTime = timer.DeltaTime();
+
 
 		// Engine frame starts here (Update game logic, physics)
 		// And render DX12 frame here
