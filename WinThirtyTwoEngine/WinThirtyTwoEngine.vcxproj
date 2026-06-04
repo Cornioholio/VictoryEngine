@@ -18,6 +18,14 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Core\Common\CoreMinimal.h" />
+    <ClInclude Include="Core\Timer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Core\Timer.cpp" />
+    <ClCompile Include="Platform\main.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -126,14 +134,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Timer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CoreMinimal.h" />
-    <ClInclude Include="Timer.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

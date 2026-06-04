@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreMinimal.h"
+#include "../Core/Common/CoreMinimal.h"
 
 class Timer
 {

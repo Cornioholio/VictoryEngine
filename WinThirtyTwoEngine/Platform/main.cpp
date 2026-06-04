@@ -1,5 +1,5 @@
-#include "CoreMinimal.h"
-#include "Timer.h"
+#include "../Core/Common/CoreMinimal.h"
+#include "../Core/Timer.h"
 
 // Forward declaration of windows procedure to handle OS messages
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

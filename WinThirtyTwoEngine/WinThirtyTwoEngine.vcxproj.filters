@@ -1,33 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{cd844d0d-8b80-4a42-98ca-c15ef76c99b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Common">
+      <UniqueIdentifier>{2a56613d-08eb-4eb0-b210-515aadbf578c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{4c031547-792f-47d2-b1df-7ca0db528b60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{5c345b97-bc5d-4720-8c43-2255bad89ffe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\D3D12">
+      <UniqueIdentifier>{1be792d3-28c8-4663-9dbe-6e0d8c10b379}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Shaders">
+      <UniqueIdentifier>{5b83bbe6-65f0-4ec7-81a1-a697231abdd6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClInclude Include="Core\Common\CoreMinimal.h">
+      <Filter>Core\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Timer.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Timer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CoreMinimal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClCompile Include="Core\Timer.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\main.cpp">
+      <Filter>Platform</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
