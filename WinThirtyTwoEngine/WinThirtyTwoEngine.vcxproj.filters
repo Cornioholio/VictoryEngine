@@ -31,6 +31,9 @@
     <ClInclude Include="Core\Timer.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\SystemInput.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Timer.cpp">
@@ -38,6 +41,9 @@
     </ClCompile>
     <ClCompile Include="Platform\main.cpp">
       <Filter>Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\SystemInput.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
