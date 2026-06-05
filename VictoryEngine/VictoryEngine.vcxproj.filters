@@ -7,6 +7,9 @@
     <ClCompile Include="Core\Timer.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\D3D12\DX12Renderer.cpp">
+      <Filter>Graphics\D3D12</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Common\CoreMinimal.h">
@@ -17,6 +20,9 @@
     </ClInclude>
     <ClInclude Include="Core\Timer.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\D3D12\DX12Renderer.h">
+      <Filter>Graphics\D3D12</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

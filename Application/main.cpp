@@ -2,6 +2,8 @@
 #include "Core/Timer.h"
 #include "Core/SystemInput.h"
 
+#include "Graphics/D3D12/DX12Renderer.h"
+
 // Forward declaration of windows procedure to handle OS messages
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -40,6 +42,18 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
 	SystemInput::Initialize(hwnd);
 
+	VictoryRenderer renderer;
+	bool dx12Initialised = renderer.Initialize(hwnd, 1280, 720);
+
+	if (!dx12Initialised) 
+	{
+		MessageBox(hwnd, L"DirectX 12 Initialisation failed!", L"Engine error", MB_OK | MB_ICONERROR);
+	} 
+	else 
+	{
+		OutputDebugString(L"[Victory Engine] DirectX 12 Device, SwapChain, and Heaps initialized perfectly!\n");
+	}
+
 	// Timer for deltaTime
 	Timer timer;
 	timer.Reset();
@@ -77,6 +91,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
 	}
 
+	renderer.Shutdown();
 	return 0;
 }
 

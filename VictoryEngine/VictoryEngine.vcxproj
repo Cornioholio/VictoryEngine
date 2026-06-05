@@ -22,10 +22,12 @@
     <ClInclude Include="Core\Common\CoreMinimal.h" />
     <ClInclude Include="Core\SystemInput.h" />
     <ClInclude Include="Core\Timer.h" />
+    <ClInclude Include="Graphics\D3D12\DX12Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\SystemInput.cpp" />
     <ClCompile Include="Core\Timer.cpp" />
+    <ClCompile Include="Graphics\D3D12\DX12Renderer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
