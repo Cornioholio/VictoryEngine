@@ -39,7 +39,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	ShowWindow(hwnd, nCmdShow);
 
 	SystemInput::Initialize(hwnd);
-		
+
 	// Timer for deltaTime
 	Timer timer;
 	timer.Reset();
@@ -48,12 +48,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	MSG msg = {};
 	bool isRunning = true;
 
-	while (isRunning) 
+	while (isRunning)
 	{
 		// Peek message required, get message freezes frame until a mouse event etc occurs, not ideal
-		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) 
+		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
-			if (msg.message == WM_QUIT) 
+			if (msg.message == WM_QUIT)
 			{
 				isRunning = false;
 			}
@@ -62,7 +62,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 		}
 
 		// Check if we exited early from the message loop
-		if (!isRunning) 
+		if (!isRunning)
 		{
 			break;
 		}
@@ -80,11 +80,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	return 0;
 }
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	switch(uMsg) 
+	switch (uMsg)
 	{
-	case WM_INPUT: 
+	case WM_INPUT:
 	{
 		SystemInput::ProcessRawInput(lParam);
 

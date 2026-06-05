@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Core\SystemInput.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Timer.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Core\Common\CoreMinimal.h">
+      <Filter>Core\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\SystemInput.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Timer.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{147e7ee5-07ee-4099-b85a-82665d8ac2f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Common">
+      <UniqueIdentifier>{008fec9f-8bf9-4a5f-acfb-ea69327265bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{f24bc228-4943-473f-aa33-fc9850c751c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\D3D12">
+      <UniqueIdentifier>{e96b19d4-ea50-4af8-864c-25d53ca5cf1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Shaders">
+      <UniqueIdentifier>{8eadd47c-3926-49bf-b2a2-91d34e07d3c8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

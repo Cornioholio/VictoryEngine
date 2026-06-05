@@ -39,9 +39,6 @@
     <ClCompile Include="Core\Timer.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Platform\main.cpp">
-      <Filter>Platform</Filter>
-    </ClCompile>
     <ClCompile Include="Core\SystemInput.cpp">
       <Filter>Core</Filter>
     </ClCompile>

@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/Common/CoreMinimal.h"
 
-class SystemInput
+class ENGINE_API SystemInput
 {
 public:
 	static bool Initialize(HWND hwndTarget);
