@@ -48,6 +48,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	if (!dx12Initialised) 
 	{
 		MessageBox(hwnd, L"DirectX 12 Initialisation failed!", L"Engine error", MB_OK | MB_ICONERROR);
+		return 0;
 	} 
 	else 
 	{
