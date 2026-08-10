@@ -10,7 +10,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
 	// Window class name, array of chars
-	const wchar_t windowClassName[] = L"GameEngineWindow";
+	const wchar_t windowClassName[] = L"VictoryEngineApplication";
 
 	WNDCLASS wc = {};
 	wc.lpfnWndProc = WindowProc;
@@ -23,7 +23,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	// Create window
 	HWND hwnd = CreateWindowEx(
 		0,								// Window styles
-		L"GameEngineWindow",			// Window class
+		L"VictoryEngineApplication",	// Window class
 		windowClassName,				// Window title text
 		WS_OVERLAPPEDWINDOW,			// Window style (resizable & close button)
 		CW_USEDEFAULT, CW_USEDEFAULT,	// Position on screen
@@ -59,6 +59,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	Timer timer;
 	timer.Reset();
 
+	float defaultBackgroundColour[4] = { 0.1f, 0.15f, 0.23f, 1.0f };
+	float targetColour[4] = { 0.7f, 0.2f, 0.2f, 1.0f };
+
+	float currentBackgroundColor[4] = { 0.1f, 0.15f, 0.23f, 1.0f };
+
 	// Non blocking window (need ts for it to be a game engine)
 	MSG msg = {};
 	bool isRunning = true;
@@ -86,9 +91,20 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 		timer.Tick();
 		float deltaTime = timer.DeltaTime();
 
+		float* activeTarget = SystemInput::IsKeyDown('W') ? targetColour : defaultBackgroundColour;
 		// 1. Polling update system for input state (keyboard, mouse, gamepad)
 		// 2. Engine frame starts here (Update game logic, physics)
 		// 3. Render DX12 frame
+		float fadeSpeed = 5.0f * deltaTime;
+		for (int i = 0; i < 3; ++i)
+		{
+			currentBackgroundColor[i] += (activeTarget[i] - currentBackgroundColor[i]) * fadeSpeed;
+		}
+
+		// 3. Render frame with our dynamic values
+		renderer.RenderFrame(currentBackgroundColor);
+
+		SystemInput::ClearMouseDeltas();
 
 	}
 
@@ -103,7 +119,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_INPUT:
 	{
 		SystemInput::ProcessRawInput(lParam);
-
+		
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
 	case WM_DESTROY:

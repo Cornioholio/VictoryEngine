@@ -2,7 +2,11 @@
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <wrl.h>
+#include <dxcapi.h>
 
+#include <filesystem>
+
+#pragma comment(lib, "dxcompiler.lib")
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 // ^ Link essential DirectX 12 libraries
@@ -13,12 +17,21 @@
 #define ENGINE_API __declspec(dllimport)
 #endif
 
+struct Vertex 
+{
+	// X, Y, Z
+	float position[3];
+	// R, G, B, A
+	float color[4];
+};
+
 class ENGINE_API VictoryRenderer
 {
 public:
 	bool Initialize(HWND hwnd, int width, int height); // Initializes the DirectX 12 renderer with the given window handle and dimensions
 	void Shutdown(); // Shuts down the renderer and releases resources
 
+	void RenderFrame(const float* clearColor);
 private:
 	static const UINT frameCount_ = 2; // Number of frames in the swap chain (double buffering)
 
@@ -32,8 +45,25 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence_; // Fence for synchronizing CPU and GPU
 	UINT64 fenceValue_ = 0; // Current value of the fence for synchronization
+	UINT64 fenceValues_[frameCount_] = { 0 };
 	HANDLE fenceEvent_ = nullptr; // Event handle for waiting on the fence
 	UINT frameIndex_ = 0; // Current frame index in the swap chain
 
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> commandAllocators_[frameCount_];
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
+
+	// Shader compilation and storage
+	Microsoft::WRL::ComPtr<IDxcBlob> vertexShader_;
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShader_;
+
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
+
+	bool CompileShader(const wchar_t* filePath,
+		const wchar_t* entryPoint,
+		const wchar_t* target,
+		Microsoft::WRL::ComPtr<IDxcBlob>& shaderBlob);
+
+	void MoveToNextFrame();
+	void FlushGPU();
 };
 

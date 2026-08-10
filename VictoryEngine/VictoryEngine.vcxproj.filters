@@ -42,4 +42,12 @@
       <UniqueIdentifier>{8eadd47c-3926-49bf-b2a2-91d34e07d3c8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphics\Shaders\VertexShader.hlsl">
+      <Filter>Graphics\Shaders</Filter>
+    </None>
+    <None Include="Graphics\Shaders\PixelShader.hlsl">
+      <Filter>Graphics\Shaders</Filter>
+    </None>
+  </ItemGroup>
 </Project>

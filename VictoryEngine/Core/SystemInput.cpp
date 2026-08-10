@@ -95,10 +95,9 @@ void SystemInput::ProcessRawInput(LPARAM lParam)
 
 				bool isKeyPressed = (flags & RI_KEY_BREAK) == 0;
 
-				if (keyCode == 'W')
+				if (keyCode < 256) 
 				{
-					// Move forward state
-					OutputDebugStringA(isKeyPressed ? "W pressed\n" : "W released\n");
+					keyStates_[keyCode] = isKeyPressed;
 				}
 			}
 		}
