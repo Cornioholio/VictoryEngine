@@ -22,11 +22,13 @@
     <ClInclude Include="Core\Common\CoreMinimal.h" />
     <ClInclude Include="Core\SystemInput.h" />
     <ClInclude Include="Core\Timer.h" />
+    <ClInclude Include="EngineAPI.h" />
     <ClInclude Include="Graphics\D3D12\DX12Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\SystemInput.cpp" />
     <ClCompile Include="Core\Timer.cpp" />
+    <ClCompile Include="EngineAPI.cpp" />
     <ClCompile Include="Graphics\D3D12\DX12Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -128,7 +130,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ENGINE_BUILD_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ENGINE_BUILD_DLL;VICTORYENGINE_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
@@ -144,7 +146,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ENGINE_BUILD_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ENGINE_BUILD_DLL;VICTORYENGINE_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>

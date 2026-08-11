@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFApplication"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="VictoryEngine" Height="1080" Width="1920">
     <Grid>
-
+        <TextBlock Text="Victory Engine"
+                   HorizontalAlignment ="Center"
+                   VerticalAlignment="Center"
+                   FontSize="32"
+        />  
     </Grid>
 </Window>

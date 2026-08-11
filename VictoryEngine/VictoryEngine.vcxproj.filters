@@ -10,6 +10,7 @@
     <ClCompile Include="Graphics\D3D12\DX12Renderer.cpp">
       <Filter>Graphics\D3D12</Filter>
     </ClCompile>
+    <ClCompile Include="EngineAPI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Common\CoreMinimal.h">
@@ -24,6 +25,7 @@
     <ClInclude Include="Graphics\D3D12\DX12Renderer.h">
       <Filter>Graphics\D3D12</Filter>
     </ClInclude>
+    <ClInclude Include="EngineAPI.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">

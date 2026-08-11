@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Runtime.InteropServices;
 
 namespace WPFApplication
 {
@@ -16,9 +17,17 @@ namespace WPFApplication
     /// </summary>
     public partial class MainWindow : Window
     {
+        [DllImport("VictoryEngine.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool VictoryEngine_Test();
+
+
         public MainWindow()
         {
             InitializeComponent();
+
+            bool result = VictoryEngine_Test();
+
+            Title = result ? "VictoryEngine Test Passed" : "VictoryEngine Test Failed";
         }
     }
 }
