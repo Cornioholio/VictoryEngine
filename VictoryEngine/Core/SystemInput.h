@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/Common/CoreMinimal.h"
 
-class ENGINE_API SystemInput
+class VICTORY_API SystemInput
 {
 public:
 	static bool Initialize(HWND hwndTarget);

@@ -11,6 +11,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Application", "Application\
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFApplication", "WPFApplication\WPFApplication.csproj", "{4F836CE7-0A6E-47E6-9830-1D9A781AE52C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F59B8040-BC5D-4995-8167-F8D7A74E78BE} = {F59B8040-BC5D-4995-8167-F8D7A74E78BE}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

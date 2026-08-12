@@ -12,9 +12,9 @@
 // ^ Link essential DirectX 12 libraries
 
 #ifdef ENGINE_BUILD_DLL
-#define ENGINE_API __declspec(dllexport)
+#define VICTORY_API __declspec(dllexport)
 #else
-#define ENGINE_API __declspec(dllimport)
+#define VICTORY_API __declspec(dllimport)
 #endif
 
 struct Vertex 
@@ -25,14 +25,22 @@ struct Vertex
 	float color[4];
 };
 
-class ENGINE_API VictoryRenderer
+class VICTORY_API VictoryRenderer
 {
 public:
 	bool Initialize(HWND hwnd, int width, int height); // Initializes the DirectX 12 renderer with the given window handle and dimensions
 	void Shutdown(); // Shuts down the renderer and releases resources
-
+	void Resize(int width, int height); // Resizes the swap chain and render targets to the new dimensions
+	void CreateRenderTargetViews(); // Creates render target views for the swap chain buffers
 	void RenderFrame(const float* clearColor);
+
 private:
+	int width_ = 0;
+	int height_ = 0;
+
+	D3D12_VIEWPORT viewport_ = {};
+	D3D12_RECT scissorRect_ = {};
+
 	static const UINT frameCount_ = 2; // Number of frames in the swap chain (double buffering)
 
 	// Pipeline objects
@@ -58,6 +66,8 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
 
+
+
 	bool CompileShader(const wchar_t* filePath,
 		const wchar_t* entryPoint,
 		const wchar_t* target,
@@ -65,5 +75,6 @@ private:
 
 	void MoveToNextFrame();
 	void FlushGPU();
+
 };
 

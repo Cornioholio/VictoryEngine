@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/Common/CoreMinimal.h"
 
-class ENGINE_API Timer
+class VICTORY_API Timer
 {
 public:
 	Timer();

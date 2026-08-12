@@ -24,7 +24,7 @@
 
 // If building the engine dll, export symbols. if compiling the client app, import symbols
 #ifdef ENGINE_BUILD_DLL
-	#define ENGINE_API __declspec(dllexport)
+	#define VICTORY_API __declspec(dllexport)
 #else
-	#define ENGINE_API __declspec(dllimport)
+	#define VICTORY_API __declspec(dllimport)
 #endif

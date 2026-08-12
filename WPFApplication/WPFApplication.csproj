@@ -8,20 +8,39 @@
     <UseWPF>true</UseWPF>
 	<PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
-  
+	
   <Target Name="CopyVictoryEngine" AfterTargets="Build">
 	<Copy
 		SourceFiles="$(SolutionDir)x64\Debug\VictoryEngine.dll"
 		DestinationFolder="$(OutputPath)" 
+		SkipUnchangedFiles="true"
 	/>
 	<Copy 
 		SourceFiles="$(SolutionDir)x64\Debug\dxcompiler.dll"
 		DestinationFolder="$(OutputPath)"
+		SkipUnchangedFiles="true"
 	/>
 	<Copy
 		SourceFiles="$(SolutionDir)x64\Debug\dxil.dll"
 		DestinationFolder="$(OutputPath)"
+		SkipUnchangedFiles="true"
+	/>	
+	
+	<MakeDir
+		Directories="$(OutputPath)Shaders" 	
 	/>
+    <Copy
+        SourceFiles="$(SolutionDir)x64\Debug\Shaders\VertexShader.hlsl"
+        DestinationFolder="$(OutputPath)Shaders"
+        SkipUnchangedFiles="true" 
+	/>
+
+    <Copy
+        SourceFiles="$(SolutionDir)x64\Debug\Shaders\PixelShader.hlsl"
+        DestinationFolder="$(OutputPath)Shaders"
+        SkipUnchangedFiles="true" 
+	/>
+	
   </Target>
   
 </Project>

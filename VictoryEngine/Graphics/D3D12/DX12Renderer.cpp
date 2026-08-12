@@ -129,14 +129,25 @@ bool VictoryRenderer::Initialize(HWND hwnd, int width, int height)
 	swapChainDesc.SampleDesc.Count = 1; // DX12 handles multi-sampling via separate textures, keep at 1
 
 	Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain1;
-	if (FAILED(factory_->CreateSwapChainForHwnd(
-		commandQueue_.Get(), // Swap chain needs the queue to handle presentations
+	HRESULT hr = factory_->CreateSwapChainForHwnd(
+		commandQueue_.Get(),
 		hwnd,
 		&swapChainDesc,
-		nullptr, // No fullscreen desc, we will handle that separately if needed
-		nullptr, // No output restriction, allow it to choose the best output
-		&swapChain1)))
+		nullptr,
+		nullptr,
+		&swapChain1);
+
+	if (FAILED(hr))
 	{
+		wchar_t buffer[256];
+
+		swprintf_s(
+			buffer,
+			L"[VictoryEngine] CreateSwapChainForHwnd failed. HRESULT: 0x%08X\n",
+			static_cast<unsigned int>(hr));
+
+		OutputDebugStringW(buffer);
+
 		return false;
 	}
 
@@ -214,10 +225,128 @@ bool VictoryRenderer::Initialize(HWND hwnd, int width, int height)
 		return false;
 	}
 
+	width_ = width;
+	height_ = height;
+
+	viewport_.TopLeftX = 0.0f;
+	viewport_.TopLeftY = 0.0f;
+	viewport_.Width = static_cast<float>(width);
+	viewport_.Height = static_cast<float>(height);
+	viewport_.MinDepth = 0.0f;
+	viewport_.MaxDepth = 1.0f;
+
+	scissorRect_.left = 0;
+	scissorRect_.top = 0;
+	scissorRect_.right = width;
+	scissorRect_.bottom = height;
+
 	// Stutter safety, force the GPU to fully process everything we just loaded
 	FlushGPU();
 
 	return true;
+}
+
+void VictoryRenderer::Resize(int width, int height) 
+{
+	if (width <= 0 || height <= 0) 
+	{
+		return;
+	}
+	if(width == width_ && height == height_) 
+	{
+		return;
+	}
+
+	wchar_t message[256];
+
+	swprintf_s(
+		message,
+		L"[VictoryRenderer] Resize: %d x %d\n",
+		width,
+		height);
+
+	OutputDebugString(message);
+
+	FlushGPU();
+
+	for (UINT i = 0; i < frameCount_; i++) 
+	{
+		renderTargets_[i].Reset();
+	}
+
+	HRESULT hr = swapChain_->ResizeBuffers(
+		frameCount_,
+		width,
+		height,
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		0);
+
+	if(FAILED(hr)) 
+	{
+		wchar_t errorMessage[256];
+
+		swprintf_s(
+			errorMessage,
+			L"[VictoryRenderer] ResizeBuffers failed. Width: %d Height: %d HRESULT: 0x%08X\n",
+			width,
+			height,
+			static_cast<unsigned int>(hr));
+
+		OutputDebugString(errorMessage);
+
+		return;
+	}
+
+	CreateRenderTargetViews();
+
+	width_ = width;
+	height_ = height;
+
+	// Update viewport.
+	viewport_.TopLeftX = 0.0f;
+	viewport_.TopLeftY = 0.0f;
+	viewport_.Width = static_cast<float>(width);
+	viewport_.Height = static_cast<float>(height);
+	viewport_.MinDepth = 0.0f;
+	viewport_.MaxDepth = 1.0f;
+
+	// Update scissor rectangle.
+	scissorRect_.left = 0;
+	scissorRect_.top = 0;
+	scissorRect_.right = width;
+	scissorRect_.bottom = height;
+
+	// The swap chain may now have a different current buffer.
+	frameIndex_ = swapChain_->GetCurrentBackBufferIndex();
+
+}
+
+void VictoryRenderer::CreateRenderTargetViews() 
+{
+	UINT rtvDescriptorSize =
+		device_->GetDescriptorHandleIncrementSize(
+			D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle =
+		rtvHeap_->GetCPUDescriptorHandleForHeapStart();
+
+	for (UINT n = 0; n < frameCount_; n++)
+	{
+		if (FAILED(
+			swapChain_->GetBuffer(
+				n,
+				IID_PPV_ARGS(&renderTargets_[n]))))
+		{
+			return;
+		}
+
+		device_->CreateRenderTargetView(
+			renderTargets_[n].Get(),
+			nullptr,
+			rtvHandle);
+
+		rtvHandle.ptr += rtvDescriptorSize;
+	}
 }
 void VictoryRenderer::Shutdown() 
 {
@@ -290,20 +419,39 @@ void VictoryRenderer::RenderFrame(const float* clearColor)
 
 void VictoryRenderer::FlushGPU()
 {
-	if (FAILED(commandQueue_->Signal(fence_.Get(), fenceValues_[frameIndex_])))
+	OutputDebugString(L"[VictoryRenderer] FlushGPU: START\n");
+
+	fenceValue_++;
+
+	HRESULT hr = commandQueue_->Signal(
+		fence_.Get(),
+		fenceValue_);
+
+	if (FAILED(hr))
 	{
+		OutputDebugString(L"[VictoryRenderer] FlushGPU: Signal FAILED\n");
 		return;
 	}
 
-	if (fence_->GetCompletedValue() < fenceValues_[frameIndex_])
+	OutputDebugString(L"[VictoryRenderer] FlushGPU: Signal succeeded\n");
+
+	if (fence_->GetCompletedValue() < fenceValue_)
 	{
-		if (SUCCEEDED(fence_->SetEventOnCompletion(fenceValues_[frameIndex_], fenceEvent_))) 
+		OutputDebugString(L"[VictoryRenderer] FlushGPU: Waiting...\n");
+
+		hr = fence_->SetEventOnCompletion(
+			fenceValue_,
+			fenceEvent_);
+
+		if (SUCCEEDED(hr))
 		{
-			WaitForSingleObject(fenceEvent_, INFINITE);
+			WaitForSingleObject(
+				fenceEvent_,
+				INFINITE);
 		}
 	}
 
-	fenceValues_[frameIndex_]++;
+	OutputDebugString(L"[VictoryRenderer] FlushGPU: Finished\n");
 }
 
 void VictoryRenderer::MoveToNextFrame() 

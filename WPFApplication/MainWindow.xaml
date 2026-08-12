@@ -5,12 +5,55 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFApplication"
         mc:Ignorable="d"
-        Title="VictoryEngine" Height="1080" Width="1920">
+        Title="VictoryEngine" 
+        Height="1080" 
+        Width="1920"
+        MinWidth="800"
+        MinHeight="600"
+        >
     <Grid>
-        <TextBlock Text="Victory Engine"
-                   HorizontalAlignment ="Center"
-                   VerticalAlignment="Center"
-                   FontSize="32"
-        />  
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="200"/>
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="280"/>
+        </Grid.ColumnDefinitions>
+        
+        <!-- Viewport editor -->
+        <Border 
+            x:Name="ViewportArea"
+            Grid.Row="1"
+            Grid.Column="1"
+            Background="#181818"
+            Padding="8"
+            SizeChanged="ViewportArea_SizeChanged"
+            >
+            <local:ViewportHost   
+                x:Name="Viewport"
+                Width="1280"
+                Height="720"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+            />
+        </Border>
+        
+        <!-- Console -->
+        <Border
+            Grid.Row="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Background="#202020">
+
+            <TextBlock
+                Text="Console Output"
+                FontSize="18"
+                Foreground="White"
+                Margin="10"/>
+        </Border>
     </Grid>
 </Window>
