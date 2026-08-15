@@ -12,13 +12,9 @@
 // Makes the functions we put here easier for .net to locate, because c++ wacky asf
 extern "C" 
 {
-	VICTORY_API bool VictoryEngine_Test();
-
 	VICTORY_API bool VictoryEngine_Initialize(HWND hwnd, int width, int height);
 
-	VICTORY_API void VictoryEngine_Resize(int width, int height);
-
-	VICTORY_API void VictoryEngine_RenderClearFrame(float r, float g, float b, float a);
+	VICTORY_API void VictoryEngine_RequestResize(int width, int height);
 
 	VICTORY_API void VictoryEngine_Shutdown();
 }

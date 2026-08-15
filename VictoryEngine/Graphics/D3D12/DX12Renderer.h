@@ -28,6 +28,11 @@ struct Vertex
 class VICTORY_API VictoryRenderer
 {
 public:
+	VictoryRenderer() = default;
+
+	VictoryRenderer(const VictoryRenderer&) = delete; // Prevent copying
+	VictoryRenderer& operator=(const VictoryRenderer&) = delete; // Prevent assignment
+
 	bool Initialize(HWND hwnd, int width, int height); // Initializes the DirectX 12 renderer with the given window handle and dimensions
 	void Shutdown(); // Shuts down the renderer and releases resources
 	void Resize(int width, int height); // Resizes the swap chain and render targets to the new dimensions
@@ -65,8 +70,6 @@ private:
 	Microsoft::WRL::ComPtr<IDxcBlob> pixelShader_;
 
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
-
-
 
 	bool CompileShader(const wchar_t* filePath,
 		const wchar_t* entryPoint,

@@ -1,63 +1,105 @@
 #include "EngineAPI.h"
 #include "Graphics/D3D12/DX12Renderer.h"
+#include <thread>
+#include <mutex>
+#include <atomic>
 
-static VictoryRenderer* renderer = nullptr;
-
-bool VictoryEngine_Test() 
+namespace
 {
-	return true;
-}
+	struct EngineState
+	{
+		VictoryRenderer* renderer = nullptr;
 
+		std::thread renderThread;
+		std::atomic<bool> isRunning = false;
+
+		int pendingWidth = 0;
+		int pendingHeight = 0;
+		bool resizeRequested = false;
+
+		std::mutex resizeMutex;
+	};
+
+	EngineState engineState;
+}
 bool VictoryEngine_Initialize(HWND hwnd, int width, int height) 
 {
-	if(renderer != nullptr) 
+	if(engineState.renderer != nullptr)
 	{
 		return true; // Already initialized
 	}
 
-	renderer = new VictoryRenderer();
+	engineState.renderer = new VictoryRenderer();
 
-	if(!renderer->Initialize(hwnd, width, height)) 
+	if(!engineState.renderer->Initialize(hwnd, width, height))
 	{
-		delete renderer;
-		renderer = nullptr;
+		delete engineState.renderer;
+		engineState.renderer = nullptr;
+
 		return false; // Initialization failed
 	}
+	
+	engineState.isRunning = true;
+	engineState.renderThread = std::thread([]()
+	{
+		const float clearColor[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+
+		while(engineState.isRunning)
+		{
+			int width = 0;
+			int height = 0;
+			bool shouldResize = false;
+			{
+				std::lock_guard<std::mutex> lock(engineState.resizeMutex);
+				if(engineState.resizeRequested)
+				{
+					width = engineState.pendingWidth;
+					height = engineState.pendingHeight;
+
+					engineState.resizeRequested = false;
+					shouldResize = true;
+				}
+			}
+			if(shouldResize)
+			{
+				engineState.renderer->Resize(width, height);
+			}
+			engineState.renderer->RenderFrame(clearColor); // Render with no clear color, just present the frame
+		}
+	});
 
 	return true;
 }
 
-void VictoryEngine_Resize(int width, int height) 
+void VictoryEngine_RequestResize(int width, int height) 
 {
-	if(renderer == nullptr) 
+	if(width <= 0 || height <= 0)
 	{
-		return;
+		return; // Invalid dimensions
 	}
 
-	renderer->Resize(width, height);
-}
+	std::lock_guard<std::mutex> lock(engineState.resizeMutex);
 
-void VictoryEngine_RenderClearFrame(float r, float g, float b, float a) 
-{
-	if(renderer == nullptr) 
-	{
-		return; // Renderer not initialized
-	}
-
-	float clearColor[4] = { r, g, b, a };
-
-	renderer->RenderFrame(clearColor);
+	engineState.pendingWidth = width;
+	engineState.pendingHeight = height;
+	engineState.resizeRequested = true;
 }
 
 void VictoryEngine_Shutdown() 
 {
-	if(renderer == nullptr) 
+	if(engineState.renderer == nullptr)
 	{
 		return; // Renderer not initialized
 	}
 
-	renderer->Shutdown();
+	engineState.isRunning = false;
+	if(engineState.renderThread.joinable()) 
+	{
+		engineState.renderThread.join();
+	}
 
-	delete renderer;
-	renderer = nullptr;
+	engineState.renderer->Shutdown();
+
+	delete engineState.renderer;
+	engineState.renderer = nullptr;
 }

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WPFApplication": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace WPFApplication
 {
@@ -17,9 +18,6 @@ namespace WPFApplication
     /// </summary>
     public partial class MainWindow : Window
     {
-        [DllImport("VictoryEngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool VictoryEngine_Test();
-
         private const double BaseViewportWidth = 1280.0;
         private const double BaseViewportHeight = 720.0;
 
@@ -27,33 +25,14 @@ namespace WPFApplication
         {
             InitializeComponent();
 
-            MessageBox.Show("WPF UI thread is alive!");
-
-            bool result = VictoryEngine_Test();
-
-            Title = result ? "VictoryEngine Test Passed" : "VictoryEngine Test Failed";
-
-            //CompositionTarget.Rendering += OnRendering;
+            Title = "VictoryEngine 1.x";
         }
-
-        //private void OnRendering(object? sender, EventArgs e) 
-       // {
-        //    VictoryEngineInterop.RenderClearFrame(0.1f, 0.2f, 0.3f, 1.0f);
-        //}
-
-       // protected override void OnClosed(EventArgs e)
-       // {
-       //     CompositionTarget.Rendering -= OnRendering;
-
-      //      base.OnClosed(e);
-      //  }
-
         private void ViewportArea_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             double availableWidth = ViewportArea.ActualWidth - 16;
             double availableHeight = ViewportArea.ActualHeight - 16;
 
-            if (availableWidth <= 0 || availableHeight <= 0) 
+            if (availableWidth <= 0 || availableHeight <= 0)
             {
                 return;
             }
@@ -69,6 +48,6 @@ namespace WPFApplication
 
             Viewport.Width = BaseViewportWidth * scale;
             Viewport.Height = BaseViewportHeight * scale;
-        }
+        }  
     }
 }

@@ -8,6 +8,14 @@ namespace WPFApplication
 {
     public class ViewportHost : HwndHost 
     {
+        private const int WS_CHILD = 0x40000000;
+        private const int WS_VISIBLE = 0x10000000;
+
+        private nint handle = nint.Zero;
+
+        private int currentWidth = 1;
+        private int currentHeight = 1;
+
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         private static extern nint CreateWindowEx(
             int dwExStyle,
@@ -26,27 +34,9 @@ namespace WPFApplication
         [DllImport("user32.dll")]
         private static extern bool DestroyWindow(nint hwnd);
 
-        [DllImport("user32.dll")]
-        private static extern bool SetWindowPos(
-            nint hWnd,
-            nint hWndInsertAfter,
-            int X,
-            int Y,
-            int cx,
-            int cy,
-            uint uFlags);
-
-
-        private const int WS_CHILD = 0x40000000;
-        private const int WS_VISIBLE = 0x10000000;
-
-        private int currentWidth = 1;
-        private int currentHeight = 1;
-
-        private nint handle;
-        private void ResizeRenderer()
+        private void RequestResize()
         {
-            if (handle == 0)
+            if (handle == nint.Zero)
             {
                 return;
             }
@@ -61,7 +51,8 @@ namespace WPFApplication
                 1,
                 (int)Math.Round(ActualHeight * dpi.DpiScaleY));
 
-            if (width == currentWidth && height == currentHeight)
+            if (width == currentWidth &&
+                height == currentHeight)
             {
                 return;
             }
@@ -69,31 +60,27 @@ namespace WPFApplication
             currentWidth = width;
             currentHeight = height;
 
-            System.Diagnostics.Debug.WriteLine(
-                $"[ViewportHost] Resizing renderer: {width} x {height}");
-
-            VictoryEngineInterop.Resize(width, height);
-
-            System.Diagnostics.Debug.WriteLine(
-                "[ViewportHost] Renderer resize returned");
+            VictoryEngineInterop.RequestResize(
+                width,
+                height);
         }
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
 
-            if (handle == 0)
+            if (handle == nint.Zero)
             {
                 return;
             }
 
             Dispatcher.BeginInvoke(
                 System.Windows.Threading.DispatcherPriority.Render,
-                new Action(ResizeRenderer));
+                new Action(RequestResize));
         }
 
         protected override HandleRef BuildWindowCore(HandleRef hwndParent)
         {
-            nint hwnd = CreateWindowEx(
+            handle = CreateWindowEx(
                 0,
                 "STATIC",
                 "",
@@ -107,21 +94,21 @@ namespace WPFApplication
                 0,
                 0);
 
-            if(hwnd == 0) 
+            if(handle == nint.Zero) 
             {
                 throw new InvalidOperationException("Failed to create VictoryEngine viewport HWND.");
             }
 
-            handle = hwnd;
+            VictoryEngineInterop.Initialize(handle, 1, 1);
 
-            VictoryEngineInterop.Initialize(hwnd, 1, 1);
-
-            return new HandleRef(this, hwnd);
+            return new HandleRef(this, handle);
         }
 
         protected override void DestroyWindowCore(HandleRef hwnd)
         {
             VictoryEngineInterop.Shutdown();
+
+            handle = nint.Zero;
 
             DestroyWindow(hwnd.Handle);
         }

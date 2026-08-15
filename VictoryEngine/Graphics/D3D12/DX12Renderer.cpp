@@ -257,16 +257,6 @@ void VictoryRenderer::Resize(int width, int height)
 		return;
 	}
 
-	wchar_t message[256];
-
-	swprintf_s(
-		message,
-		L"[VictoryRenderer] Resize: %d x %d\n",
-		width,
-		height);
-
-	OutputDebugString(message);
-
 	FlushGPU();
 
 	for (UINT i = 0; i < frameCount_; i++) 
@@ -283,17 +273,6 @@ void VictoryRenderer::Resize(int width, int height)
 
 	if(FAILED(hr)) 
 	{
-		wchar_t errorMessage[256];
-
-		swprintf_s(
-			errorMessage,
-			L"[VictoryRenderer] ResizeBuffers failed. Width: %d Height: %d HRESULT: 0x%08X\n",
-			width,
-			height,
-			static_cast<unsigned int>(hr));
-
-		OutputDebugString(errorMessage);
-
 		return;
 	}
 
@@ -318,7 +297,6 @@ void VictoryRenderer::Resize(int width, int height)
 
 	// The swap chain may now have a different current buffer.
 	frameIndex_ = swapChain_->GetCurrentBackBufferIndex();
-
 }
 
 void VictoryRenderer::CreateRenderTargetViews() 
@@ -377,13 +355,12 @@ void VictoryRenderer::Shutdown()
 
 void VictoryRenderer::RenderFrame(const float* clearColor)
 {
-	// Clear out memory allocaiton from frame's index allocator cache
 	commandAllocators_[frameIndex_]->Reset();
 
-	// Put command list into a recording state using out freshly cleaned alloc memory
-	commandList_->Reset(commandAllocators_[frameIndex_].Get(), nullptr);
+	commandList_->Reset(
+		commandAllocators_[frameIndex_].Get(),
+		nullptr);
 
-	// Transition our back buffer texture from a display state into a render target destination state
 	D3D12_RESOURCE_BARRIER barrier = {};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
@@ -391,24 +368,44 @@ void VictoryRenderer::RenderFrame(const float* clearColor)
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
 	commandList_->ResourceBarrier(1, &barrier);
 
-	// Calculate exactly where targeted render target handle live inside descriptor heap
-	UINT rtvDescriptorSize = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap_->GetCPUDescriptorHandleForHeapStart();
-	rtvHandle.ptr += (frameIndex_ * rtvDescriptorSize);
+	UINT rtvDescriptorSize =
+		device_->GetDescriptorHandleIncrementSize(
+			D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
-	// Specify a clear colour value (RGBA)
-	commandList_->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle =
+		rtvHeap_->GetCPUDescriptorHandleForHeapStart();
 
-	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+	rtvHandle.ptr += frameIndex_ * rtvDescriptorSize;
+
+	commandList_->ClearRenderTargetView(
+		rtvHandle,
+		clearColor,
+		0,
+		nullptr);
+
+	barrier.Transition.StateBefore =
+		D3D12_RESOURCE_STATE_RENDER_TARGET;
+
+	barrier.Transition.StateAfter =
+		D3D12_RESOURCE_STATE_PRESENT;
+
 	commandList_->ResourceBarrier(1, &barrier);
 
-	if (SUCCEEDED(commandList_->Close())) 
+
+	if (SUCCEEDED(commandList_->Close()))
 	{
-		ID3D12CommandList* ppCommandLists[] = { commandList_.Get() };
-		commandQueue_->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+		ID3D12CommandList* ppCommandLists[] =
+		{
+			commandList_.Get()
+		};
+
+		commandQueue_->ExecuteCommandLists(
+			_countof(ppCommandLists),
+			ppCommandLists);
+
 	}
 
 	swapChain_->Present(1, 0);
@@ -419,8 +416,6 @@ void VictoryRenderer::RenderFrame(const float* clearColor)
 
 void VictoryRenderer::FlushGPU()
 {
-	OutputDebugString(L"[VictoryRenderer] FlushGPU: START\n");
-
 	fenceValue_++;
 
 	HRESULT hr = commandQueue_->Signal(
@@ -429,15 +424,11 @@ void VictoryRenderer::FlushGPU()
 
 	if (FAILED(hr))
 	{
-		OutputDebugString(L"[VictoryRenderer] FlushGPU: Signal FAILED\n");
 		return;
 	}
 
-	OutputDebugString(L"[VictoryRenderer] FlushGPU: Signal succeeded\n");
-
 	if (fence_->GetCompletedValue() < fenceValue_)
 	{
-		OutputDebugString(L"[VictoryRenderer] FlushGPU: Waiting...\n");
 
 		hr = fence_->SetEventOnCompletion(
 			fenceValue_,
@@ -451,7 +442,6 @@ void VictoryRenderer::FlushGPU()
 		}
 	}
 
-	OutputDebugString(L"[VictoryRenderer] FlushGPU: Finished\n");
 }
 
 void VictoryRenderer::MoveToNextFrame() 
@@ -479,9 +469,6 @@ bool VictoryRenderer::CompileShader(const wchar_t* fileName, const wchar_t* entr
 	IDxcUtils* utils;
 	Microsoft::WRL::ComPtr<IDxcCompiler3> compiler;
 	IDxcIncludeHandler* includeHandler;
-
-	OutputDebugStringW(fileName);
-	OutputDebugStringW(L"\n");
 
 	if (FAILED(DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&utils)))
 		|| FAILED(DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&compiler)))

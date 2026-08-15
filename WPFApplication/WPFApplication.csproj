@@ -14,6 +14,10 @@
 		SourceFiles="$(SolutionDir)x64\Debug\VictoryEngine.dll"
 		DestinationFolder="$(OutputPath)" 
 		SkipUnchangedFiles="true"
+	/>	<Copy
+		SourceFiles="$(SolutionDir)x64\Debug\VictoryEngine.pdb"
+		DestinationFolder="$(OutputPath)" 
+		SkipUnchangedFiles="true"
 	/>
 	<Copy 
 		SourceFiles="$(SolutionDir)x64\Debug\dxcompiler.dll"

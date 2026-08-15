@@ -35,8 +35,6 @@
             >
             <local:ViewportHost   
                 x:Name="Viewport"
-                Width="1280"
-                Height="720"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
             />
