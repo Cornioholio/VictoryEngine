@@ -22,12 +22,14 @@
     <ClInclude Include="Core\Common\CoreMinimal.h" />
     <ClInclude Include="Core\SystemInput.h" />
     <ClInclude Include="Core\Timer.h" />
+    <ClInclude Include="Core\Tools\Logger.h" />
     <ClInclude Include="EngineAPI.h" />
     <ClInclude Include="Graphics\D3D12\DX12Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\SystemInput.cpp" />
     <ClCompile Include="Core\Timer.cpp" />
+    <ClCompile Include="Core\Tools\Logger.cpp" />
     <ClCompile Include="EngineAPI.cpp" />
     <ClCompile Include="Graphics\D3D12\DX12Renderer.cpp" />
   </ItemGroup>

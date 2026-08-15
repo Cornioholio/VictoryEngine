@@ -11,6 +11,9 @@
       <Filter>Graphics\D3D12</Filter>
     </ClCompile>
     <ClCompile Include="EngineAPI.cpp" />
+    <ClCompile Include="Core\Tools\Logger.cpp">
+      <Filter>Core\Tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Common\CoreMinimal.h">
@@ -26,6 +29,9 @@
       <Filter>Graphics\D3D12</Filter>
     </ClInclude>
     <ClInclude Include="EngineAPI.h" />
+    <ClInclude Include="Core\Tools\Logger.h">
+      <Filter>Core\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -42,6 +48,9 @@
     </Filter>
     <Filter Include="Graphics\Shaders">
       <UniqueIdentifier>{8eadd47c-3926-49bf-b2a2-91d34e07d3c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Tools">
+      <UniqueIdentifier>{9a5665f4-349d-477d-8353-e09dc69688b4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
