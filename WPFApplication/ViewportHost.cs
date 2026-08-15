@@ -101,16 +101,6 @@ namespace WPFApplication
 
             VictoryEngineInterop.Initialize(handle, 1, 1);
 
-            int logCount = VictoryEngineInterop.GetLogCount();
-
-            for (int i = 0; i < logCount; i++)
-            {
-                string message = VictoryEngineInterop.GetLogMessage(i);
-                int level = VictoryEngineInterop.GetLogLevel(i);
-
-                System.Diagnostics.Debug.WriteLine($"[{level}] {message}");
-            }
-
             return new HandleRef(this, handle);
         }
 

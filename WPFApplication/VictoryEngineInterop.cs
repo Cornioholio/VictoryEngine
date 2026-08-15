@@ -3,6 +3,18 @@ using System.Runtime.InteropServices;
 
 namespace WPFApplication 
 {
+    public enum LogLevel 
+    {
+        Info,
+        Warning,
+        Error,
+        Debug
+    }
+    public class ConsoleLogEntry
+    { 
+        public LogLevel Level { get; set; }
+        public string Message { get; set; }
+    }
     public static class VictoryEngineInterop
     {
         // Engine
@@ -47,9 +59,9 @@ namespace WPFApplication
         {
             return VictoryEngine_GetLogCount();
         }
-        public static int GetLogLevel(int index)
+        public static LogLevel GetLogLevel(int index)
         {
-            return VictoryEngine_GetLogLevel(index);
+            return (LogLevel)VictoryEngine_GetLogLevel(index);
         }
         
         public static string GetLogMessage(int index)

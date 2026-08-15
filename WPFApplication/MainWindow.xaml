@@ -10,6 +10,7 @@
         Width="1920"
         MinWidth="800"
         MinHeight="600"
+        Loaded="Window_Loaded"
         >
     <Grid>
         <Grid.RowDefinitions>
@@ -47,11 +48,36 @@
             Grid.ColumnSpan="3"
             Background="#202020">
 
-            <TextBlock
-                Text="Console Output"
-                FontSize="18"
-                Foreground="White"
-                Margin="10"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Grid.Row="0"
+                    Text="Console Output"
+                    FontSize="18"
+                    Foreground="White"
+                    Margin="10"/>
+
+                <ListBox
+                    Grid.Row="1"
+                    ItemsSource="{Binding LogEntries}"
+                    Background="Black"
+                    Foreground="White"
+                    BorderThickness="0">
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock
+                                Text="{Binding Message}"
+                                Foreground="White"
+                                Margin="5,2"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
         </Border>
     </Grid>
 </Window>

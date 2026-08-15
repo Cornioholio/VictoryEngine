@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Runtime.InteropServices;
+using System.Collections.ObjectModel;
 using System.Threading;
 
 namespace WPFApplication
@@ -24,8 +25,27 @@ namespace WPFApplication
         public MainWindow()
         {
             InitializeComponent();
-
+            DataContext = this;
             Title = "VictoryEngine 0.x";
+        }
+
+        public ObservableCollection<ConsoleLogEntry> LogEntries { get; } = new();
+        private void LoadLogEntries() 
+        {
+            int logCount = VictoryEngineInterop.GetLogCount();
+
+            for(int i = 0; i < logCount; i++)
+            {
+                LogLevel level = VictoryEngineInterop.GetLogLevel(i);
+                string message = VictoryEngineInterop.GetLogMessage(i);
+
+                LogEntries.Add(new ConsoleLogEntry
+                {
+                    Level = level,
+                    Message = message
+                });
+                
+            }
         }
         private void ViewportArea_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -54,6 +74,11 @@ namespace WPFApplication
             VictoryEngineInterop.Shutdown();
 
             base.OnClosed(e);
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadLogEntries();
         }
     }
 }
