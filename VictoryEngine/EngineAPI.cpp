@@ -71,7 +71,7 @@ bool VictoryEngine_Initialize(HWND hwnd, int width, int height)
 	return true;
 }
 
-void VictoryEngine_RequestResize(int width, int height) 
+void VictoryEngine_RequestViewportResize(int width, int height) 
 {
 	if(width <= 0 || height <= 0)
 	{
@@ -85,6 +85,33 @@ void VictoryEngine_RequestResize(int width, int height)
 	engineState.resizeRequested = true;
 }
 
+int VictoryEngine_GetLogCount() 
+{
+	return static_cast<int>(Logger::GetLogEntries().size());
+}
+
+const char* VictoryEngine_GetLogMessage(int index) 
+{
+	const auto& logEntries = Logger::GetLogEntries();
+
+	if(index < 0 || index >= static_cast<int>(logEntries.size()))
+	{
+		return nullptr;
+	}
+
+	return logEntries[index].message_.c_str();
+}
+int VictoryEngine_GetLogLevel(int index) 
+{
+
+	const auto& logEntries = Logger::GetLogEntries();
+	if(index < 0 || index >= static_cast<int>(logEntries.size())) 
+	{
+		return -1;
+	}
+
+	return static_cast<int>(Logger::GetLogEntries()[index].level_);
+}
 void VictoryEngine_Shutdown() 
 {
 	if(engineState.renderer == nullptr)

@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Core/Tools/Logger.h"
 #include <Windows.h> 
 
 // Basically means we make this function available to other programs that load this dll.
@@ -14,7 +14,11 @@ extern "C"
 {
 	VICTORY_API bool VictoryEngine_Initialize(HWND hwnd, int width, int height);
 
-	VICTORY_API void VictoryEngine_RequestResize(int width, int height);
+	VICTORY_API void VictoryEngine_RequestViewportResize(int width, int height);
+
+	VICTORY_API int VictoryEngine_GetLogCount();
+	VICTORY_API const char* VictoryEngine_GetLogMessage(int index);
+	VICTORY_API int VictoryEngine_GetLogLevel(int index);
 
 	VICTORY_API void VictoryEngine_Shutdown();
 }

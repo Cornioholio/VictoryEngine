@@ -34,7 +34,7 @@ namespace WPFApplication
         [DllImport("user32.dll")]
         private static extern bool DestroyWindow(nint hwnd);
 
-        private void RequestResize()
+        private void RequestViewportResize()
         {
             if (handle == nint.Zero)
             {
@@ -60,7 +60,7 @@ namespace WPFApplication
             currentWidth = width;
             currentHeight = height;
 
-            VictoryEngineInterop.RequestResize(
+            VictoryEngineInterop.RequestViewportResize(
                 width,
                 height);
         }
@@ -75,7 +75,7 @@ namespace WPFApplication
 
             Dispatcher.BeginInvoke(
                 System.Windows.Threading.DispatcherPriority.Render,
-                new Action(RequestResize));
+                new Action(RequestViewportResize));
         }
 
         protected override HandleRef BuildWindowCore(HandleRef hwndParent)
@@ -100,6 +100,16 @@ namespace WPFApplication
             }
 
             VictoryEngineInterop.Initialize(handle, 1, 1);
+
+            int logCount = VictoryEngineInterop.GetLogCount();
+
+            for (int i = 0; i < logCount; i++)
+            {
+                string message = VictoryEngineInterop.GetLogMessage(i);
+                int level = VictoryEngineInterop.GetLogLevel(i);
+
+                System.Diagnostics.Debug.WriteLine($"[{level}] {message}");
+            }
 
             return new HandleRef(this, handle);
         }
