@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFApplication"
         mc:Ignorable="d"
-        Title="VictoryEngine" 
+        Title="VictoryEngine 0.x" 
         Height="1080" 
         Width="1920"
         MinWidth="800"

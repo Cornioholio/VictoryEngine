@@ -106,8 +106,6 @@ namespace WPFApplication
 
         protected override void DestroyWindowCore(HandleRef hwnd)
         {
-            VictoryEngineInterop.Shutdown();
-
             handle = nint.Zero;
 
             DestroyWindow(hwnd.Handle);

@@ -25,7 +25,7 @@ namespace WPFApplication
         {
             InitializeComponent();
 
-            Title = "VictoryEngine 1.x";
+            Title = "VictoryEngine 0.x";
         }
         private void ViewportArea_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -48,6 +48,12 @@ namespace WPFApplication
 
             Viewport.Width = BaseViewportWidth * scale;
             Viewport.Height = BaseViewportHeight * scale;
-        }  
+        }
+        protected override void OnClosed(EventArgs e)
+        {
+            VictoryEngineInterop.Shutdown();
+
+            base.OnClosed(e);
+        }
     }
 }
