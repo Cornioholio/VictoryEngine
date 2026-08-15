@@ -21,6 +21,8 @@
 #include <Windows.h>
 #include <memory>
 #include <iostream>
+#include <string>
+#include <vector>
 
 // If building the engine dll, export symbols. if compiling the client app, import symbols
 #ifdef ENGINE_BUILD_DLL
