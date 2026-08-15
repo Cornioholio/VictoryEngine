@@ -151,6 +151,31 @@ bool VictoryRenderer::Initialize(HWND hwnd, int width, int height)
 		return false;
 	}
 
+
+	// DEBUG
+	HWND swapChainHwnd = nullptr;
+
+	if (FAILED(swapChain1->GetHwnd(&swapChainHwnd)))
+	{
+		OutputDebugStringW(
+			L"[VictoryEngine] Failed to get swap chain HWND.\n");
+
+		return false;
+	}
+
+	if (swapChainHwnd != hwnd)
+	{
+		OutputDebugStringW(
+			L"[VictoryEngine] ERROR: Swap chain HWND does not match viewport HWND.\n");
+
+		return false;
+	}
+
+	OutputDebugStringW(
+		L"[VictoryEngine] Swap chain HWND matches viewport HWND.\n");
+	// DEBUG
+
+
 	// Upgrade generic swap chain to IDXGISwapChain3 for better features and control
 	if (FAILED(swapChain1.As(&swapChain_))) 
 	{

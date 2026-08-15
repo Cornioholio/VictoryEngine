@@ -13,7 +13,7 @@ namespace WPFApplication
         private static extern void VictoryEngine_Shutdown();
 
         [DllImport("VictoryEngine.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void VictoryEngine_Resize(int width, int height);
+        private static extern void VictoryEngine_RequestResize(int width, int height);
 
 
         public static void Initialize(nint hwnd, int width, int height)
@@ -28,7 +28,7 @@ namespace WPFApplication
         
         public static void RequestResize(int width, int height)
         {
-            VictoryEngine_Resize(width, height);
+            VictoryEngine_RequestResize(width, height);
         }
         public static void Shutdown()
         {
