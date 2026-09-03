@@ -72,6 +72,10 @@ private:
 	Microsoft::WRL::ComPtr<IDxcBlob> pixelShader_;
 
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
+	Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState_;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> vertexBuffer_;
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_ = {};
 
 	bool CompileShader(const wchar_t* filePath,
 		const wchar_t* entryPoint,

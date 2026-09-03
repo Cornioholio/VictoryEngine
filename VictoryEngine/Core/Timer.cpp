@@ -15,7 +15,7 @@ Timer::Timer() : secondsPerCount_(0.0), deltaTime_(-1.0), stopped_(false)
 
 float Timer::TotalTime() const 
 {
-	if (stopped_) 
+	if(stopped_) 
 	{
 		return static_cast<float>(((stopTime_.QuadPart - pausedTime_.QuadPart) - baseTime_.QuadPart) * secondsPerCount_);
 	} else 
@@ -24,7 +24,7 @@ float Timer::TotalTime() const
 	}
 }
 
-float Timer::DeltaTime() const 
+float Timer::DeltaTime() const
 {
 	return static_cast<float>(deltaTime_);
 }
@@ -45,7 +45,7 @@ void Timer::Start()
 	LARGE_INTEGER startTime;
 	QueryPerformanceCounter(&startTime);
 
-	if (!stopped_) 
+	if(!stopped_) 
 	{
 		pausedTime_.QuadPart += (startTime.QuadPart - stopTime_.QuadPart);
 	}
@@ -53,7 +53,7 @@ void Timer::Start()
 
 void Timer::Stop() 
 {
-	if (!stopped_) 
+	if(!stopped_) 
 	{
 		LARGE_INTEGER currTime;
 		QueryPerformanceCounter(&currTime);
@@ -65,7 +65,7 @@ void Timer::Stop()
 
 void Timer::Tick() 
 {
-	if (stopped_) 
+	if(stopped_) 
 	{
 		deltaTime_ = 0.0;
 		return;
@@ -80,7 +80,7 @@ void Timer::Tick()
 	prevTime_ = currTime_;
 
 	// Prevent negative values
-	if (deltaTime_ < 0.0) 
+	if(deltaTime_ < 0.0) 
 	{
 		deltaTime_ = 0.0;
 	}

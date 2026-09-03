@@ -31,24 +31,22 @@ bool SystemInput::Initialize(HWND hwndTarget)
 	RAWINPUTDEVICE rawInputDevices[2];
 
 	// Mouse config
-	rawInputDevices[0].usUsagePage = 0x01; // Desktop controls
-	rawInputDevices[0].usUsage = 0x02;	   // Mouse
-	rawInputDevices[0].dwFlags = 0;		   // Standard tracking
+	rawInputDevices[0].usUsagePage = 0x01;
+	rawInputDevices[0].usUsage = 0x02;
+	rawInputDevices[0].dwFlags = 0;
 	rawInputDevices[0].hwndTarget = hwndTarget;
 
 	// Keyboard config
 	rawInputDevices[1].usUsagePage = 0x01;
-	rawInputDevices[1].usUsage = 0x06;	   // Keyboard
+	rawInputDevices[1].usUsage = 0x06;
 	rawInputDevices[1].dwFlags = 0;
 	rawInputDevices[1].hwndTarget = hwndTarget;
 
-	if (RegisterRawInputDevices(rawInputDevices, 2, sizeof(rawInputDevices[0])) == FALSE)
+	if(RegisterRawInputDevices(rawInputDevices, 2, sizeof(rawInputDevices[0])) == FALSE)
 	{
 		// Registration failed 
-		OutputDebugStringA("Failed to register raw input devices.\n");
 		return false;
 	}
-	OutputDebugStringA("SystemInput raw input devices initialized successfully.\n");
 	return true;
 }
 
@@ -64,18 +62,18 @@ void SystemInput::ProcessRawInput(LPARAM lParam)
 		&size,
 		sizeof(RAWINPUTHEADER));
 
-	if (size > 0)
+	if(size > 0)
 	{
 		// Allocate dynamic buffer on stack for input packet
 		std::unique_ptr<BYTE[]> buffer = std::make_unique<BYTE[]>(size);
 
 		// Second call populates the data buffer
-		if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, buffer.get(), &size, sizeof(RAWINPUTHEADER)) == size)
+		if(GetRawInputData((HRAWINPUT)lParam, RID_INPUT, buffer.get(), &size, sizeof(RAWINPUTHEADER)) == size)
 		{
 			RAWINPUT* raw = reinterpret_cast<RAWINPUT*>(buffer.get());
 
 			// Handle raw mouse movement
-			if (raw->header.dwType == RIM_TYPEMOUSE)
+			if(raw->header.dwType == RIM_TYPEMOUSE)
 			{
 				// Relative movements
 				LONG dX = raw->data.mouse.lLastX;
@@ -88,7 +86,7 @@ void SystemInput::ProcessRawInput(LPARAM lParam)
 					// Handle left button down
 				}
 			}
-			else if (raw->header.dwType == RIM_TYPEKEYBOARD)
+			else if(raw->header.dwType == RIM_TYPEKEYBOARD)
 			{
 				USHORT keyCode = raw->data.keyboard.VKey;
 				USHORT flags = raw->data.keyboard.Flags;

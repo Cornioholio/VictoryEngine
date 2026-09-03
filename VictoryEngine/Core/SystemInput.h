@@ -9,10 +9,11 @@ public:
 	// Message hook for processing raw input from the OS, called from winproc in main.cpp
 	static void ProcessRawInput(LPARAM lParam);
 
+	// Get and clear updates in mouse movement
+	static void GetRawMouseDeltas(LONG& dX, LONG& dY);
 	static void ClearMouseDeltas();
 
 	static bool IsKeyDown(int keyCode);
-	static void GetRawMouseDeltas(LONG& dX, LONG& dY);
 
 private:
 	static bool keyStates_[256]; // Track key states for all virtual key codes

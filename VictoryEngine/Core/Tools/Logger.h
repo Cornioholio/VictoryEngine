@@ -16,6 +16,7 @@ struct LogEntry
 class VICTORY_API Logger
 {
 public:
+	// Log for each 'error' type
 	static void Info(const std::string& message);
 	static void Warning(const std::string& message);
 	static void Error(const std::string& message);

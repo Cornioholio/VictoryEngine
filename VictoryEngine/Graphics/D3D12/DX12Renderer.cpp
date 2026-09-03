@@ -1,11 +1,6 @@
 #include "DX12Renderer.h"
 bool VictoryRenderer::Initialize(HWND hwnd, int width, int height)
 {
-	Logger::Info("This is an info message.");
-	Logger::Warning("This is a warning message.");
-	Logger::Error("This is an error message.");
-	Logger::Debug("This is a debug message.");
-	
 	// Clean out array memory to remove any native C++ stack junk values
 	for (UINT n = 0; n < frameCount_; n++)
 	{

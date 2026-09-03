@@ -14,13 +14,10 @@ using System.Threading;
 
 namespace WPFApplication
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        private const double BaseViewportWidth = 1280.0;
-        private const double BaseViewportHeight = 720.0;
+        private const double BaseViewportWidth = 1920.0;
+        private const double BaseViewportHeight = 1080.0;
 
         public MainWindow()
         {
@@ -29,6 +26,7 @@ namespace WPFApplication
             Title = "VictoryEngine 0.x";
         }
 
+        // Logger stuff
         public ObservableCollection<ConsoleLogEntry> LogEntries { get; } = new();
         private void LoadLogEntries() 
         {
@@ -47,12 +45,14 @@ namespace WPFApplication
                 
             }
         }
+
+        // Window and DX12 Renderer viewport logic
         private void ViewportArea_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             double availableWidth = ViewportArea.ActualWidth - 16;
             double availableHeight = ViewportArea.ActualHeight - 16;
 
-            if (availableWidth <= 0 || availableHeight <= 0)
+            if(availableWidth <= 0 || availableHeight <= 0)
             {
                 return;
             }
@@ -63,7 +63,7 @@ namespace WPFApplication
             // Choose whichever dimension limits us first.
             double scale = Math.Min(scaleX, scaleY);
 
-            // Don't make the viewport larger than 1280x720.
+            // Don't make the viewport larger than 1920x1080.
             scale = Math.Min(scale, 1.0);
 
             Viewport.Width = BaseViewportWidth * scale;
@@ -71,9 +71,15 @@ namespace WPFApplication
         }
         protected override void OnClosed(EventArgs e)
         {
-            VictoryEngineInterop.Shutdown();
-
-            base.OnClosed(e);
+            try
+            {
+                VictoryEngineInterop.Shutdown();
+            }
+            finally 
+            {
+                base.OnClosed(e);
+            }
+ 
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

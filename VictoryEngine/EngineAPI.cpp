@@ -114,13 +114,9 @@ int VictoryEngine_GetLogLevel(int index)
 }
 void VictoryEngine_Shutdown() 
 {
-	if(engineState.renderer == nullptr)
-	{
-		return; // Renderer not initialized
-	}
-
 	engineState.isRunning = false;
-	if(engineState.renderThread.joinable()) 
+
+	if (engineState.renderThread.joinable())
 	{
 		engineState.renderThread.join();
 	}
