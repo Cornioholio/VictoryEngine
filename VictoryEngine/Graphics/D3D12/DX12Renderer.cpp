@@ -90,10 +90,6 @@ bool VictoryRenderer::Initialize(HWND hwnd, int width, int height)
 
 	// Create empty root signature
 	D3D12_ROOT_SIGNATURE_DESC rootSigDesc = {};
-	rootSigDesc.NumParameters = 0;
-	rootSigDesc.pParameters = nullptr;
-	rootSigDesc.NumStaticSamplers = 0;
-	rootSigDesc.pStaticSamplers = nullptr;
 	rootSigDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	// Serialize root sig
@@ -139,42 +135,10 @@ bool VictoryRenderer::Initialize(HWND hwnd, int width, int height)
 
 	if (FAILED(hr))
 	{
-		wchar_t buffer[256];
-
-		swprintf_s(
-			buffer,
-			L"[VictoryEngine] CreateSwapChainForHwnd failed. HRESULT: 0x%08X\n",
-			static_cast<unsigned int>(hr));
-
-		OutputDebugStringW(buffer);
+		Logger::Error("Failed to create swap chain for hwnd.");
 
 		return false;
 	}
-
-
-	// DEBUG
-	HWND swapChainHwnd = nullptr;
-
-	if (FAILED(swapChain1->GetHwnd(&swapChainHwnd)))
-	{
-		OutputDebugStringW(
-			L"[VictoryEngine] Failed to get swap chain HWND.\n");
-
-		return false;
-	}
-
-	if (swapChainHwnd != hwnd)
-	{
-		OutputDebugStringW(
-			L"[VictoryEngine] ERROR: Swap chain HWND does not match viewport HWND.\n");
-
-		return false;
-	}
-
-	OutputDebugStringW(
-		L"[VictoryEngine] Swap chain HWND matches viewport HWND.\n");
-	// DEBUG
-
 
 	// Upgrade generic swap chain to IDXGISwapChain3 for better features and control
 	if (FAILED(swapChain1.As(&swapChain_))) 
@@ -196,12 +160,12 @@ bool VictoryRenderer::Initialize(HWND hwnd, int width, int height)
 		return false;
 	}
 
-	// Get exact memory address size for an rtv handle on this specific gpu device
-	UINT rtvDescriptorSize = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	rtvDescriptorSize_ =
+		device_->GetDescriptorHandleIncrementSize(
+			D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	// Get handle pointing to the very beginning of our allocated memory block
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap_->GetCPUDescriptorHandleForHeapStart();
-
 	// Create an RTV handle pointing to each backbuffer resource instance
 	for (UINT n = 0; n < frameCount_; n++) 
 	{
@@ -214,7 +178,7 @@ bool VictoryRenderer::Initialize(HWND hwnd, int width, int height)
 		device_->CreateRenderTargetView(renderTargets_[n].Get(), nullptr, rtvHandle);
 
 		// Step forward in memory to position the next handle allocation 
-		rtvHandle.ptr += rtvDescriptorSize;
+		rtvHandle.ptr += rtvDescriptorSize_;
 	}
 
 	// Create direct graphics command list to record rendering sequences
@@ -253,6 +217,15 @@ bool VictoryRenderer::Initialize(HWND hwnd, int width, int height)
 	width_ = width;
 	height_ = height;
 
+	UpdateViewport(width, height);
+
+	// Stutter safety, force the GPU to fully process everything we just loaded
+	//FlushGPU();
+
+	return true;
+}
+void VictoryRenderer::UpdateViewport(int width, int height)
+{
 	viewport_.TopLeftX = 0.0f;
 	viewport_.TopLeftY = 0.0f;
 	viewport_.Width = static_cast<float>(width);
@@ -264,13 +237,7 @@ bool VictoryRenderer::Initialize(HWND hwnd, int width, int height)
 	scissorRect_.top = 0;
 	scissorRect_.right = width;
 	scissorRect_.bottom = height;
-
-	// Stutter safety, force the GPU to fully process everything we just loaded
-	FlushGPU();
-
-	return true;
 }
-
 void VictoryRenderer::Resize(int width, int height) 
 {
 	if (width <= 0 || height <= 0) 
@@ -307,18 +274,7 @@ void VictoryRenderer::Resize(int width, int height)
 	height_ = height;
 
 	// Update viewport.
-	viewport_.TopLeftX = 0.0f;
-	viewport_.TopLeftY = 0.0f;
-	viewport_.Width = static_cast<float>(width);
-	viewport_.Height = static_cast<float>(height);
-	viewport_.MinDepth = 0.0f;
-	viewport_.MaxDepth = 1.0f;
-
-	// Update scissor rectangle.
-	scissorRect_.left = 0;
-	scissorRect_.top = 0;
-	scissorRect_.right = width;
-	scissorRect_.bottom = height;
+	UpdateViewport(width, height);
 
 	// The swap chain may now have a different current buffer.
 	frameIndex_ = swapChain_->GetCurrentBackBufferIndex();
@@ -326,10 +282,6 @@ void VictoryRenderer::Resize(int width, int height)
 
 void VictoryRenderer::CreateRenderTargetViews() 
 {
-	UINT rtvDescriptorSize =
-		device_->GetDescriptorHandleIncrementSize(
-			D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle =
 		rtvHeap_->GetCPUDescriptorHandleForHeapStart();
 
@@ -348,7 +300,7 @@ void VictoryRenderer::CreateRenderTargetViews()
 			nullptr,
 			rtvHandle);
 
-		rtvHandle.ptr += rtvDescriptorSize;
+		rtvHandle.ptr += rtvDescriptorSize_;
 	}
 }
 void VictoryRenderer::Shutdown() 
@@ -396,14 +348,11 @@ void VictoryRenderer::RenderFrame(const float* clearColor)
 
 	commandList_->ResourceBarrier(1, &barrier);
 
-	UINT rtvDescriptorSize =
-		device_->GetDescriptorHandleIncrementSize(
-			D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle =
 		rtvHeap_->GetCPUDescriptorHandleForHeapStart();
 
-	rtvHandle.ptr += frameIndex_ * rtvDescriptorSize;
+	rtvHandle.ptr += frameIndex_ * rtvDescriptorSize_;
 
 	commandList_->ClearRenderTargetView(
 		rtvHandle,

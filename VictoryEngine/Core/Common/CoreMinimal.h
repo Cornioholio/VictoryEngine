@@ -20,7 +20,6 @@
 
 #include <Windows.h>
 #include <memory>
-#include <iostream>
 #include <string>
 #include <vector>
 

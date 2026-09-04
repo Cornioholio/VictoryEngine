@@ -1,6 +1,5 @@
 #pragma once
 #include "Core/Common/CoreMinimal.h"
-
 enum class LogLevel
 {
 	Info,

@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/Tools/Logger.h"
+#include "Core/Common/CoreMinimal.h"
 
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -11,13 +12,7 @@
 #pragma comment(lib, "dxcompiler.lib")
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
-// ^ Link essential DirectX 12 libraries
-
-#ifdef ENGINE_BUILD_DLL
-#define VICTORY_API __declspec(dllexport)
-#else
-#define VICTORY_API __declspec(dllimport)
-#endif
+// ^ Link essential DirectX 12 libraries, move these to vcxproj config later on
 
 struct Vertex 
 {
@@ -42,6 +37,7 @@ public:
 	void RenderFrame(const float* clearColor);
 
 private:
+	// Viewport h & w
 	int width_ = 0;
 	int height_ = 0;
 
@@ -63,6 +59,7 @@ private:
 	UINT64 fenceValues_[frameCount_] = { 0 };
 	HANDLE fenceEvent_ = nullptr; // Event handle for waiting on the fence
 	UINT frameIndex_ = 0; // Current frame index in the swap chain
+	UINT rtvDescriptorSize_ = 0; // Size of a single render target view descriptor
 
 	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> commandAllocators_[frameCount_];
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
@@ -81,7 +78,7 @@ private:
 		const wchar_t* entryPoint,
 		const wchar_t* target,
 		Microsoft::WRL::ComPtr<IDxcBlob>& shaderBlob);
-
+	void UpdateViewport(int width, int height);
 	void MoveToNextFrame();
 	void FlushGPU();
 
